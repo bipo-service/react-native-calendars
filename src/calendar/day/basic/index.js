@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, Text} from 'react-native';
+import {TouchableOpacity, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {shouldUpdate} from '../../../component-updater';
 import Dot from '../../dot';
 import styleConstructor from './style';
+
 
 class Day extends Component {
   static displayName = 'IGNORE';
@@ -54,7 +55,16 @@ class Day extends Component {
     const isDisabled = typeof marking.disabled !== 'undefined' ? marking.disabled : this.props.state === 'disabled';
     const isToday = this.props.state === 'today';
 
-    const {marked, dotColor, selected, selectedColor, selectedTextColor, activeOpacity, disableTouchEvent} = marking;
+    const {
+      marked,
+      dotColor,
+      selected,
+      selectedColor,
+      selectedTextColor,
+      activeOpacity,
+      disableTouchEvent
+    } = marking;
+
 
     if (selected) {
       containerStyle.push(this.style.selected);
@@ -67,6 +77,7 @@ class Day extends Component {
       if (selectedTextColor) {
         textStyle.push({color: selectedTextColor});
       }
+
     } else if (isDisabled) {
       textStyle.push(this.style.disabledText);
     } else if (isToday) {
@@ -81,28 +92,46 @@ class Day extends Component {
       shouldDisableTouchEvent = disableAllTouchEventsForDisabledDays;
     }
 
+    let dotsDate = [];
+    Object.keys(this.props.marking).map((x,idx) => {      
+      if(!isNaN(x)){
+        dotsDate.push(this.props.marking[x])
+      }
+    })
     return (
       <TouchableOpacity
         testID={this.props.testID}
         style={containerStyle}
-        onPress={!shouldDisableTouchEvent ? this.onDayPress : undefined}
-        onLongPress={!shouldDisableTouchEvent ? this.onDayLongPress : undefined}
+        onPress={this.onDayPress}
+        onLongPress={this.onDayLongPress}
         activeOpacity={activeOpacity}
         disabled={shouldDisableTouchEvent}
         accessibilityRole={isDisabled ? undefined : 'button'}
         accessibilityLabel={this.props.accessibilityLabel}
       >
-        <Text allowFontScaling={false} style={textStyle}>
-          {String(this.props.children)}
-        </Text>
-        <Dot
+        <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
+        <View style ={{flexDirection:'row', flex: 1, alignItems: 'center', justifyContent:'center'}}>
+          { dotsDate.map((x,idx) =>  {
+            if(!!x)
+                return <View style={{marginHorizontal: 1}}>
+                  <Dot
+                    theme={theme}
+                    isMarked={!!x ? x.marked : false}
+                    dotColor={!!x ? x.dotColor : null}
+                  />
+                </View>
+              }
+          )}
+        </View>
+        
+        {/* <Dot
           theme={theme}
           isMarked={marked}
           dotColor={dotColor}
           isSelected={selected}
           isToday={isToday}
           isDisabled={isDisabled}
-        />
+        /> */}
       </TouchableOpacity>
     );
   }

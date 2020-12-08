@@ -195,8 +195,14 @@ class Day extends Component {
       );
     }
 
-    const {marking: {marked, dotColor}, theme} = this.props;
+    const {marking , theme} = this.props;
 
+    let dotsDate = [];
+    Object.keys(marking).map((x,idx) => {
+      if(!isNaN(x)){
+        dotsDate.push(marking[x])
+      }
+    })
     return (
       <TouchableWithoutFeedback
         testID={this.props.testID}
@@ -211,11 +217,20 @@ class Day extends Component {
           {fillers}
           <View style={containerStyle}>
             <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
-            <Dot
-              theme={theme}
-              isMarked={marked}
-              dotColor={dotColor}
-            />
+            <View style ={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+              {dotsDate.length > 0 && dotsDate.map((x,idx) =>  {
+                if(!!x)
+                return <View style={{marginHorizontal: 1}}>
+                  <Dot
+                    theme={theme}
+                    isMarked={!!x ? x.marked : false}
+                    dotColor={!!x ? x.dotColor : null}
+                  />
+                </View>
+              }
+               )}
+            </View>
+            
           </View>
         </View>
       </TouchableWithoutFeedback>
