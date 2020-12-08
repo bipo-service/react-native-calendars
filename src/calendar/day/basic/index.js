@@ -44,6 +44,7 @@ class Day extends Component {
     const {theme, disableAllTouchEventsForDisabledDays} = this.props;
     const containerStyle = [this.style.base];
     const textStyle = [this.style.text];
+    const dotStyle = [this.style.dot];
 
     let marking = this.props.marking || {};
     if (marking && marking.constructor === Array && marking.length) {
@@ -113,7 +114,7 @@ class Day extends Component {
         <View style ={{flexDirection:'row', flex: 1, alignItems: 'center', justifyContent:'center'}}>
           { dotsDate.map((x,idx) =>  {
             if(!!x)
-                return <View style={{marginHorizontal: 1}}>
+                return <View style={dotStyle}>
                   <Dot
                     theme={theme}
                     isMarked={!!x ? x.marked : false}
