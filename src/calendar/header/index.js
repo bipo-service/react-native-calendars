@@ -122,7 +122,7 @@ class CalendarHeader extends Component {
   };
 
   renderHeader = () => {
-    const {renderHeader, month, monthFormat, testID, webAriaLevel} = this.props;
+    const {renderHeader, month, monthFormat, testID, webAriaLevel, onYearPress} = this.props;
     const webProps = Platform.OS === 'web' ? {'aria-level': webAriaLevel} : {};
 
     if (renderHeader) {
@@ -131,14 +131,17 @@ class CalendarHeader extends Component {
 
     return (
       <Fragment>
-        <Text
-          allowFontScaling={false}
-          style={this.style.monthText}
-          testID={testID ? `${HEADER_MONTH_NAME}-${testID}` : HEADER_MONTH_NAME}
-          {...webProps}
-        >
-          {month.toString(monthFormat)}
-        </Text>
+        <TouchableOpacity>
+          <Text
+            allowFontScaling={false}
+            style={this.style.monthText}
+            testID={testID ? `${HEADER_MONTH_NAME}-${testID}` : HEADER_MONTH_NAME}
+            onPress={() => onYearPress(month)}
+            {...webProps}
+          >
+            {month.toString(monthFormat)}
+          </Text>
+        </TouchableOpacity>
       </Fragment>
     );
   };

@@ -78,7 +78,8 @@ class Calendar extends Component {
     /** Style passed to the header */
     headerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
     /** Allow rendering of a totally custom header */
-    customHeader: PropTypes.any
+    customHeader: PropTypes.any,
+    onYearPress: PropTypes.func
   };
 
   static defaultProps = {
@@ -140,6 +141,10 @@ class Calendar extends Component {
 
   longPressDay = date => {
     this._handleDayInteraction(date, this.props.onDayLongPress);
+  };
+
+  pressYear = date => {
+    this._handleDayInteraction(date, this.props.onYearPress);
   };
 
   addMonth = count => {
@@ -366,7 +371,10 @@ class Calendar extends Component {
       ref: c => (this.header = c),
       month: this.state.currentMonth,
       addMonth: this.addMonth,
-      displayLoadingIndicator: indicator
+      displayLoadingIndicator: indicator,
+      onYearPress: month => {
+        this.pressYear(month);
+      }
     };
 
     const CustomHeader = customHeader;
