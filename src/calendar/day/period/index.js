@@ -7,7 +7,6 @@ import Dot from '../../dot';
 import * as defaultStyle from '../../../style';
 import styleConstructor from './style';
 
-
 class Day extends Component {
   static displayName = 'IGNORE';
 
@@ -32,6 +31,7 @@ class Day extends Component {
     this.markingStyle = this.getDrawingStyle(props.marking || []);
     this.onDayPress = this.onDayPress.bind(this);
     this.onDayLongPress = this.onDayLongPress.bind(this);
+    this.markingUpdates = props.marking || [];
   }
 
   onDayPress() {
@@ -44,9 +44,15 @@ class Day extends Component {
 
   shouldComponentUpdate(nextProps) {
     const newMarkingStyle = this.getDrawingStyle(nextProps.marking);
+    const newMarkingUpdates = nextProps.marking;
 
     if (!_.isEqual(this.markingStyle, newMarkingStyle)) {
       this.markingStyle = newMarkingStyle;
+      return true;
+    }
+
+    if (!_.isEqual(this.markingUpdates, newMarkingUpdates)) {
+      this.markingUpdates = newMarkingUpdates;
       return true;
     }
 
@@ -63,7 +69,7 @@ class Day extends Component {
     } else if (marking.selected) {
       defaultStyle.textStyle.color = this.theme.selectedDayTextColor;
     }
-    const resultStyle = ([marking]).reduce((prev, next) => {
+    const resultStyle = [marking].reduce((prev, next) => {
       if (next.quickAction) {
         if (next.first || next.last) {
           prev.containerStyle = this.style.firstQuickAction;
@@ -189,20 +195,20 @@ class Day extends Component {
 
       fillers = (
         <View style={[this.style.fillers, fillerStyle]}>
-          <View style={[this.style.leftFiller, leftFillerStyle]}/>
-          <View style={[this.style.rightFiller, rightFillerStyle]}/>
+          <View style={[this.style.leftFiller, leftFillerStyle]} />
+          <View style={[this.style.rightFiller, rightFillerStyle]} />
         </View>
       );
     }
 
-    const {marking , theme} = this.props;
+    const {marking, theme} = this.props;
 
     let dotsDate = [];
-    Object.keys(marking).map((x,idx) => {
-      if(!isNaN(x)){
-        dotsDate.push(marking[x])
+    Object.keys(marking).map((x, idx) => {
+      if (!isNaN(x)) {
+        dotsDate.push(marking[x]);
       }
-    })
+    });
     return (
       <TouchableWithoutFeedback
         testID={this.props.testID}
@@ -216,21 +222,20 @@ class Day extends Component {
         <View style={this.style.wrapper}>
           {fillers}
           <View style={containerStyle}>
-            <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
-            <View style ={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
-              {dotsDate.length > 0 && dotsDate.map((x,idx) =>  {
-                if(!!x)
-                return <View style={{marginHorizontal: 1}}>
-                  <Dot
-                    theme={theme}
-                    isMarked={!!x ? x.marked : false}
-                    dotColor={!!x ? x.dotColor : null}
-                  />
-                </View>
-              }
-               )}
+            <Text allowFontScaling={false} style={textStyle}>
+              {String(this.props.children)}
+            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              {dotsDate.length > 0 &&
+                dotsDate.map((x, idx) => {
+                  if (!!x)
+                    return (
+                      <View style={{marginHorizontal: 1}}>
+                        <Dot theme={theme} isMarked={!!x ? x.marked : false} dotColor={!!x ? x.dotColor : null} />
+                      </View>
+                    );
+                })}
             </View>
-            
           </View>
         </View>
       </TouchableWithoutFeedback>
